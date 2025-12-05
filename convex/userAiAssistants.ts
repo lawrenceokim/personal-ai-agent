@@ -14,6 +14,7 @@ export const InsertSelectedAssistants = mutation({
         async (record: any) =>
           await ctx.db.insert("userAiAssistants", {
             ...record,
+            aiModelId: "Google: Gemini 2.0 Flash",
             uid: args.uid,
           })
       )
@@ -34,6 +35,22 @@ export const GetAllUserAssistants = query({
       .filter((q) => q.eq(q.field("uid"), args.uid))
       .collect();
 
+    return result;
+  },
+});
+
+export const UpdateUserAiAssistant = mutation({
+  //to update the user ai assistant for the "userInstruction" and "aiModelid" fields.
+  args: {
+    id: v.id("userAiAssistants"),
+    userInstruction: v.string(),
+    aiModelId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db.patch(args.id, {
+      aiModelId: args.aiModelId,
+      userInstruction: args.userInstruction,
+    });
     return result;
   },
 });
